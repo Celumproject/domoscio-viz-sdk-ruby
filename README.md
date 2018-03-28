@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-DomoscioViz 1.1 works with Rails 3.2 onwards. You can 
+DomoscioViz 1.1 works with Rails 3.2 onwards.
 
 ### Installing
 
@@ -67,7 +67,7 @@ Then pass this url in the `following view`:
 
 ## Versioning
 
-Currently v1.0.1
+Currently v1.1.0
 
 ## Authors
 
