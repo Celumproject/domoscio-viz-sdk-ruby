@@ -1,10 +1,9 @@
-DomoscioRails.configure do |c|
+DomoscioViz.configure do |c|
     if Rails.env == "production"
         c.preproduction = true
     else
         c.preproduction = false
     end
-    c.version = 2
     c.client_id = ENV['DOMOSCIO_ID']
     c.client_passphrase = ENV['DOMOSCIO_PASSWORD']
 
