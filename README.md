@@ -51,15 +51,15 @@ end
 
 For purpose, assuming you have a tree like : 
 
-app
-├── controllers
-│   └── chart_controller.rb
-└── views
-    └── chart.html.erb
+app  
+├── controllers  
+│   └── chart_controller.rb  
+└── views  
+    └── chart.html.erb  
 
-Server request need 2 strongs parameters :
-    - First argument is the url of the chart requested.
-    - Second argument are the data (billing or optional).
+Server request need 2 strongs parameters :  
+    - First argument is the url of the chart requested.  
+    - Second argument are the data (billing or optional).  
 
 In `chart_controller.rb`:
 
