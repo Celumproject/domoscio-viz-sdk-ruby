@@ -49,25 +49,17 @@ end
 
 ### Get Url
 
-For purpose, assuming you have a tree like : 
-
-app  
-├── controllers  
-│   └── chart_controller.rb  
-└── views  
-    └── chart.html.erb  
-
 Server request need 2 strongs parameters :  
     - First argument is the url of the chart requested.  
     - Second argument are the data (billing or optional).  
 
-In `chart_controller.rb`:
+In `your controller`:
 
 ```ruby
 @chart_url = DomoscioViz::Chart.get_url("obj_mastery", {chart: "polar", objective_id: 1, student_id: 1})
 ```
 
-Then pass this url in the following view `chart.html.erb`:
+Then pass this url in the `following view`:
 
 ```html
 <iframe src="<%= @chart_url %>" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
