@@ -35,7 +35,7 @@ module DomoscioViz
     def root_url
       if @preproduction == true
         if @test == true
-          @root_url || "https://domoscio-viz-engine-staging.azurewebsites.net"
+          @root_url || "https://domoscio-viz-engine-preprod.azurewebsites.net"
         else
           @root_url || "https://domoscio-viz-engine.azurewebsites.net"
         end
