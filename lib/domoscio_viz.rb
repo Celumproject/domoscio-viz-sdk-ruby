@@ -20,17 +20,25 @@ require 'domoscio_viz/chart/chart'
 module DomoscioViz
 
   class Configuration
-    attr_accessor :preproduction, :root_url,
+    attr_accessor :preproduction, :test, :root_url,
     :client_id, :client_passphrase,
     :temp_dir
 
     def preproduction
       @preproduction || false
     end
+       
+    def test
+      @test || false
+    end
 
     def root_url
       if @preproduction == true
-        @root_url || "https://domoscio-viz-engine.herokuapp.com"
+        if @test == true
+          @root_url || "https://domoscio-viz-engine-staging.azurewebsites.net"
+        else
+          @root_url || "https://domoscio-viz-engine.azurewebsites.net"
+        end
       else
         @root_url || "http://localhost:3002"
       end
