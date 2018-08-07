@@ -37,7 +37,7 @@ module DomoscioViz
         if @test == true
           @root_url || "https://domoscio-viz-engine-preprod.azurewebsites.net"
         else
-          @root_url || "https://domoscio-viz-engine.azurewebsites.net"
+          @root_url || "https://domoscio-viz-engine-v2.azurewebsites.net"
         end
       else
         @root_url || "http://localhost:3002"

@@ -8,14 +8,14 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-DomoscioViz 1.1 works with Rails 3.2 onwards.
+DomoscioViz 1.1.3 works with Rails 3.2 onwards.
 
 ### Installing
 
 Add it to your Gemfile with:
 
 ```ruby
-gem 'domoscio_viz', '0.1.1.2', git: 'git://github.com/Celumproject/domoscio-viz-sdk-ruby', branch: 'master'
+gem 'domoscio_viz', '0.1.1.3', git: 'git://github.com/Celumproject/domoscio-viz-sdk-ruby', branch: 'master'
 ```
 
 Then run `bundle install`
@@ -56,7 +56,7 @@ Server request need 2 strongs parameters :
 In `your controller`:
 
 ```ruby
-@chart_url = DomoscioViz::Chart.get_url("obj_mastery", {chart: "polar", objective_id: 1, student_id: 1})
+@chart_url = DomoscioViz::Chart.get_url("obj_mastery", {chart: "polar", objective_id: 1, student_id: 1})["url"]
 ```
 
 Then pass this url in the `following view`:
@@ -67,7 +67,7 @@ Then pass this url in the `following view`:
 
 ## Versioning
 
-Currently v1.1.2
+Currently v1.1.3
 
 ## Authors
 
