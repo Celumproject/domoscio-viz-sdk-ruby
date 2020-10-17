@@ -6,7 +6,7 @@ module DomoscioViz
         # Perform the request a second time if it fails the fisrt time
         def get_url(util_name = nil, params = {})
           response = DomoscioViz.request(:post, url(util_name), params)
-          response = DomoscioViz.request(:post, url(util_name), params) if response.is_a?(Hash) && response['success'] == false
+          response = DomoscioViz.request(:post, url(util_name), params) unless response && response.is_a?(Hash) && response['url'] && response['success'] == true
           response
         end
       end
