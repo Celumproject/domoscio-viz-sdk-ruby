@@ -15,7 +15,7 @@ DomoscioViz 1.1.3 works with Rails 3.2 onwards.
 Add it to your Gemfile with:
 
 ```ruby
-gem 'domoscio_viz', '0.1.1.3', git: 'git://github.com/Celumproject/domoscio-viz-sdk-ruby', branch: 'master'
+gem 'domoscio_viz', '0.2.0', git: 'git://github.com/Celumproject/domoscio-viz-sdk-ruby', branch: 'master'
 ```
 
 Then run `bundle install`
@@ -67,7 +67,7 @@ Then pass this url in the `following view`:
 
 ## Versioning
 
-Currently v1.1.3
+Currently v0.2.0
 
 ## Authors
 

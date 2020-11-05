@@ -66,17 +66,18 @@ module DomoscioViz
 
     res = DomoscioViz.send_request(uri, method, params, headers, before_request_proc)
 
-    # decode json data
-    begin
+     # decode json data
+     begin
       data = DomoscioViz::JSON.load(res.body.nil? ? '' : res.body)
-      DomoscioViz::AuthorizationToken::Manager.storage.store({client_id: res['ClientID'], client_passphrase: res['ClientPassphrase']})
+      unless (res.kind_of? Net::HTTPClientError) || (res.kind_of? Net::HTTPServerError)
+        DomoscioViz::AuthorizationToken::Manager.storage.store({access_token: res['Accesstoken'], refresh_token: res['Refreshtoken']})
+      end
     rescue MultiJson::LoadError
       data = {}
     end
 
     data
   end
-
 
   def self.send_request(uri, method, params, headers, before_request_proc)
     res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http| # , use_ssl: uri.scheme == 'https') do |http|
@@ -108,12 +109,24 @@ module DomoscioViz
   end
 
   def self.request_headers
-    headers = {
-      'user_agent' => "DomoscioViz RubyBindings/#{DomoscioViz::VERSION}",
-      'ClientID' => "#{DomoscioViz.configuration.client_id}",
-      'ClientPassphrase' => "#{DomoscioViz.configuration.client_passphrase}",
-      'Content-Type' => 'application/json'
-    }
+    auth_token = DomoscioViz::AuthorizationToken::Manager.get_token
+
+    if !auth_token.is_a? String
+      headers = {
+        'user_agent' => "#{DomoscioViz.user_agent}",
+        'ClientId' => "#{DomoscioViz.configuration.client_id}",
+        'AccessToken' => "#{auth_token[:access_token]}",
+        'RefreshToken' => "#{auth_token[:refresh_token]}",
+        'Content-Type' => 'application/json'
+      }
+    else
+      headers = {
+        'user_agent' => "#{DomoscioViz.user_agent}",
+        'ClientId' => "#{DomoscioViz.configuration.client_id}",
+        'Authorization' => "Token token=#{DomoscioViz.configuration.client_passphrase}",
+        'Content-Type' => 'application/json'
+      }
+    end
     headers
   end
 
