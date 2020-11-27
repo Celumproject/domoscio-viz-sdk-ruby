@@ -1,6 +1,5 @@
 module DomoscioViz
   module AuthorizationToken
-
     class Manager
 
       class << self

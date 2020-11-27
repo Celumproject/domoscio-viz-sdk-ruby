@@ -2,16 +2,13 @@
 require 'net/https'
 require 'cgi/util'
 require 'multi_json'
-
 # helpers
 require 'domoscio_viz/version'
 require 'domoscio_viz/json'
 require 'domoscio_viz/errors'
 require 'domoscio_viz/authorization_token'
-
 # generators
 require 'domoscio_viz/generators/install_generator'
-
 # resources
 require 'domoscio_viz/http_calls'
 require 'domoscio_viz/resource'
@@ -65,26 +62,32 @@ module DomoscioViz
     uri.query = URI.encode_www_form(filters) unless filters.empty?
 
     res = DomoscioViz.send_request(uri, method, params, headers, before_request_proc)
-
+    return res if res.kind_of? DomoscioViz::ProcessingError
      # decode json data
      begin
       data = DomoscioViz::JSON.load(res.body.nil? ? '' : res.body)
+      raise ResponseError.new(uri, res.code.to_i, data) unless res.kind_of? Net::HTTPSuccess
       unless (res.kind_of? Net::HTTPClientError) || (res.kind_of? Net::HTTPServerError)
         DomoscioViz::AuthorizationToken::Manager.storage.store({access_token: res['Accesstoken'], refresh_token: res['Refreshtoken']})
       end
-    rescue MultiJson::LoadError
-      data = {}
+    rescue MultiJson::LoadError => exception
+      return ProcessingError.new(uri, 500, exception)
+    rescue ResponseError => exception
+      return exception
     end
-
     data
   end
 
   def self.send_request(uri, method, params, headers, before_request_proc)
-    res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http| # , use_ssl: uri.scheme == 'https') do |http|
-      req = Net::HTTP::const_get(method.capitalize).new(uri.request_uri, headers)
-      req.body = DomoscioViz::JSON.dump(params)
-      before_request_proc.call(req) if before_request_proc
-      http.request req
+    begin
+      res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+        req = Net::HTTP::const_get(method.capitalize).new(uri.request_uri, headers)
+        req.body = DomoscioRails::JSON.dump(params)
+        before_request_proc.call(req) if before_request_proc
+        http.request req
+      end
+    rescue Timeout::Error, Errno::EINVAL, HTTP::ConnectionError, Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => exception
+      ProcessingError.new(uri, 500, exception)
     end
   end
 
@@ -92,7 +95,6 @@ module DomoscioViz
 
   def self.user_agent
     @uname ||= get_uname
-
     {
       bindings_version: DomoscioViz::VERSION,
       lang: 'ruby',
@@ -110,7 +112,6 @@ module DomoscioViz
 
   def self.request_headers
     auth_token = DomoscioViz::AuthorizationToken::Manager.get_token
-
     if !auth_token.is_a? String
       headers = {
         'user_agent' => "#{DomoscioViz.user_agent}",
@@ -137,5 +138,4 @@ module DomoscioViz
       c.temp_dir = File.expand_path('../tmp', __FILE__)
       FileUtils.mkdir_p(c.temp_dir) unless File.directory?(c.temp_dir)
   end
-
 end
