@@ -6,19 +6,19 @@ module DomoscioViz
   end
   # ErrorMessage from VizEngine 
   class ResponseError < Error
-    attr_reader :request_url, :code, :details
-
-    def initialize(request_url, code, details)
-      @request_url, @code, @details = request_url, code, details
+    attr_reader :request_url, :code, :details, :body
+    def initialize(request_url, code, details, body)
+      @request_url, @code, @details, @body = request_url, code, details, body
       super(message) if message
     end
     def message; @details.dig(:error, :message) || @details; end
   end
-  # Processing Error from DomoscioViz
+
+  # ProcessingError from Domoscio_viz
   class ProcessingError < Error
-    attr_reader :request_url, :code, :details
-    def initialize(request_url, code, details)
-      @request_url, @code, @details = request_url, code, details
+    attr_reader :request_url, :code, :details, :body
+    def initialize(request_url, code, details, body)
+      @request_url, @code, @details, @body = request_url, code, details, body
       super(message) if message
     end
     def message; @details.message; end
