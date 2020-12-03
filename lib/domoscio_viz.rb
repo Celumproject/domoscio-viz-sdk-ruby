@@ -65,12 +65,12 @@ module DomoscioViz
      # decode json data
      begin
       data = DomoscioViz::JSON.load(res.body.nil? ? '' : res.body)
-      raise ResponseError.new(uri, res.code.to_i, data, res.body) unless res.kind_of? Net::HTTPSuccess
+      raise ResponseError.new(uri, res.code.to_i, data, res.body, params) unless res.kind_of? Net::HTTPSuccess
       unless (res.kind_of? Net::HTTPClientError) || (res.kind_of? Net::HTTPServerError)
         DomoscioViz::AuthorizationToken::Manager.storage.store({access_token: res['Accesstoken'], refresh_token: res['Refreshtoken']})
       end
     rescue MultiJson::LoadError => exception
-      return ProcessingError.new(uri, 500, exception, res.body)
+      return ProcessingError.new(uri, 500, exception, res.body, params)
     rescue ResponseError => exception
       return exception
     end
@@ -86,7 +86,7 @@ module DomoscioViz
         http.request req
       end
     rescue Timeout::Error, Errno::EINVAL, HTTP::ConnectionError, Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => exception
-      ProcessingError.new(uri, 500, exception, res.body)
+      ProcessingError.new(uri, 500, exception, res.body, params)
     end
   end
 
