@@ -7,7 +7,7 @@ module DomoscioViz
   # ResponseError from VizEngine
   class ResponseError < Error
     attr_reader :request_url, :code, :details, :body, :request_params
-    def initialize(request_url, code, details, body, request_params)
+    def initialize(request_url, code, details = {}, body = nil, request_params = {})
       @request_url, @code, @details, @body, @request_params = request_url, code, details, body, request_params
       super(message) if message
     end
@@ -17,7 +17,7 @@ module DomoscioViz
   # ProcessingError from Domoscio_viz
   class ProcessingError < Error
     attr_reader :request_url, :code, :details, :body, :request_params
-    def initialize(request_url, code, details, body, request_params)
+    def initialize(request_url, code, details = {}, body = nil, request_params = {})
       @request_url, @code, @details, @body, @request_params = request_url, code, details, body, request_params
       super(message) if message
     end
