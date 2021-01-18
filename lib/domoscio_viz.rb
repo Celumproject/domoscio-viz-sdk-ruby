@@ -32,9 +32,9 @@ module DomoscioViz
     def root_url
       if @preproduction == true
         if @test == true
-          @root_url || "https://domoscio-viz-engine-preprod.azurewebsites.net"
+          @root_url || "https://domoscio-viz-engine-v2-preprod.azurewebsites.net"
         else
-          @root_url || "https://domoscio-viz-engine-v2.azurewebsites.net"
+          @root_url || "https://visualization-engine.domoscio.com"
         end
       else
         @root_url || "http://localhost:3002"
@@ -55,20 +55,16 @@ module DomoscioViz
     URI(configuration.root_url + url)
   end
 
-  #
   def self.request(method, url, params={}, filters={}, headers = request_headers, before_request_proc = nil)
     return false if @disabled
     uri = api_uri(url)
     uri.query = URI.encode_www_form(filters) unless filters.empty?
     res = DomoscioViz.send_request(uri, method, params, headers, before_request_proc)
     return res if res.kind_of? DomoscioViz::ProcessingError
-     # decode json data
-     begin
+    begin
+      raise_http_failure(uri, res, params)
       data = DomoscioViz::JSON.load(res.body.nil? ? '' : res.body)
-      raise ResponseError.new(uri, res.code.to_i, data, res.body, params) unless res.kind_of? Net::HTTPSuccess
-      unless (res.kind_of? Net::HTTPClientError) || (res.kind_of? Net::HTTPServerError)
-        DomoscioViz::AuthorizationToken::Manager.storage.store({access_token: res['Accesstoken'], refresh_token: res['Refreshtoken']})
-      end
+      DomoscioViz::AuthorizationToken::Manager.storage.store({access_token: res['Accesstoken'], refresh_token: res['Refreshtoken']})
     rescue MultiJson::LoadError => exception
       return ProcessingError.new(uri, 500, exception, res.body, params)
     rescue ResponseError => exception
@@ -91,6 +87,17 @@ module DomoscioViz
   end
 
   private
+
+  def self.raise_http_failure(uri, res, params)
+    unless res.kind_of? Net::HTTPSuccess
+      if res.blank?
+        raise ResponseError.new(uri, 500, {error: {status: 500, message: 'VisualizationEngine not available'}}, {}, params)
+      else
+        body = DomoscioRails::JSON.load((res.body.nil? ? '' : res.body), :symbolize_keys => true)
+        raise ResponseError.new(uri, res.code.to_i, body, res.body, params)
+      end
+    end
+  end
 
   def self.user_agent
     @uname ||= get_uname

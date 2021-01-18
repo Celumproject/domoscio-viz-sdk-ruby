@@ -4,7 +4,7 @@ module DomoscioViz
     source_root File.expand_path('../templates', __FILE__)
     desc "Generate config file for DomoscioViz configuration"
     def install
-        copy_file "install.rb", "config/initializers/domoscio_viz.rb"
+      copy_file "install.rb", "config/initializers/domoscio_viz.rb"
     end
   end
 end
