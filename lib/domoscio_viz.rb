@@ -82,7 +82,7 @@ module DomoscioViz
         http.request req
       end
     rescue Timeout::Error, Errno::EINVAL, HTTP::ConnectionError, Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => exception
-      ProcessingError.new(uri, 500, exception, res.body, params)
+      ProcessingError.new(uri, 500, exception, res, params)
     end
   end
 
