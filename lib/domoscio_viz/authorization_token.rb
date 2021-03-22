@@ -12,9 +12,7 @@ module DomoscioViz
         end
 
         def get_token
-          token = storage.get
-          token = DomoscioViz.configuration.client_passphrase if token.nil?
-          token
+          storage.get
         end
       end
     end
@@ -35,9 +33,7 @@ module DomoscioViz
 
       def initialize(temp_dir = nil)
         @temp_dir = temp_dir || DomoscioViz.configuration.temp_dir
-        if !@temp_dir
-          raise "Path to temporary folder is not defined"
-        end
+        raise "Path to temporary folder is not defined" unless @temp_dir
       end
 
       def get

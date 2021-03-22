@@ -31,7 +31,6 @@ https://domoscio.com/wiki/doku.php?id=api2:start
 
 ```ruby
 DomoscioViz.configure do |c|
-    c.preproduction = true
     c.client_id = ENV['DOMOSCIO_ID']
     c.client_passphrase = ENV['DOMOSCIO_PASSWORD']
     c.temp_dir = File.expand_path('../tmp', __FILE__)
@@ -41,7 +40,6 @@ end
 
 | Key  | Type | Description |
 | ------------- | ------------- | ------------- |
-| preproduction  | `boolean` | true is for development (use the preproduction Domoscio VizEngine) and false for production |
 | client_id  | `integer` | this is your instance_id, required for access to your data |
 | client_passphrase  | `string` | client_passphrase is your secret key, this token is paired with your client_id |
 
