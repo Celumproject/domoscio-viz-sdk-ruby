@@ -51,7 +51,6 @@ module DomoscioViz
   def self.request(method, url, params={})
 
     store_tokens, headers = request_headers
-    params.merge!({'per_page': 2000}) unless params[:per_page]
     uri = api_uri(url)
 
     response = DomoscioViz.send_request(uri, method, params, headers)
@@ -91,8 +90,7 @@ module DomoscioViz
       if response.blank?
         raise ResponseError.new(uri, 500, {error: {status: 500, message: 'VisualizationEngine not available'}}, {}, params)
       else
-        body = DomoscioViz::JSON.load((response.body.nil? ? '' : response.body), :symbolize_keys => true)
-        raise ResponseError.new(uri, response.code.to_i, body, response.body, params)
+        raise ResponseError.new(uri, response.code.to_i,  DomoscioViz::JSON.load((response.body.nil? ? '' : response.body), :symbolize_keys => true), response.body, params)
       end
     end
   end
